@@ -10,10 +10,10 @@ RUN apk add --no-cache \
     musl-dev \
     libffi-dev
 
-COPY frontend/requirements.txt .
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY frontend/ .
+COPY . .
 
 ENV FLASK_APP=main.py
 ENV FLASK_ENV=production
@@ -21,4 +21,4 @@ ENV PYTHONWARNINGS="ignore:This is a development server"
 
 EXPOSE 8181
 
-CMD ["python", "app.py"] 
+CMD ["python", "main.py"] 

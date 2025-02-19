@@ -11,11 +11,11 @@ RUN apk add --no-cache \
     libffi-dev
 
 # Install Python dependencies
-COPY admin/requirements.txt .
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Copy application code
-COPY admin/ .
+COPY . .
 
 ENV FLASK_APP=main.py
 ENV FLASK_ENV=production
@@ -23,4 +23,4 @@ ENV PYTHONWARNINGS="ignore:This is a development server"
 
 EXPOSE 8080
 
-CMD ["python", "app.py"] 
+CMD ["python", "main.py"] 
