@@ -1,0 +1,104 @@
+services:
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: ./admin
+          target: /app
+    volumes:
+      - ./admin:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/admin_db
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - '8080:8080'
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      frontend_db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      admin:
+        condition: service_started
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@frontend_db:5432/frontend_db
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - '8181:8181'
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=admin_db
+    ports:
+      - '5432:5432'
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  frontend_db:
+    image: postgres:16-alpine
+    volumes:
+      - frontend_db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=frontend_db
+    ports:
+      - '5433:5432'
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - '6379:6379'
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  frontend_db_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge

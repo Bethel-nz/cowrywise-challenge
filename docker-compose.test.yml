@@ -1,0 +1,81 @@
+services:
+  test-postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=test_admin_db
+    ports:
+      - '5433:5432'
+    networks:
+      - test-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  test-frontend-db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=test_frontend_db
+    ports:
+      - '5434:5432'
+    networks:
+      - test-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  test-redis:
+    image: redis:alpine
+    networks:
+      - test-network
+
+  test-frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@test-frontend-db:5432/test_frontend_db
+      - REDIS_URL=redis://test-redis:6379/0
+      - PYTHONPATH=/app
+    depends_on:
+      test-frontend-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_started
+    networks:
+      - test-network
+    working_dir: /app/frontend
+    command: pytest -v
+
+  test-admin:
+    build:
+      context: .
+      dockerfile: admin/Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@test-postgres:5432/test_admin_db
+      - REDIS_URL=redis://test-redis:6379/0
+      - PYTHONPATH=/app
+    depends_on:
+      test-postgres:
+        condition: service_healthy
+      test-redis:
+        condition: service_started
+    networks:
+      - test-network
+    working_dir: /app/admin
+    command: pytest -v
+
+networks:
+  test-network:
+    driver: bridge
