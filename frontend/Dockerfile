@@ -3,12 +3,14 @@ FROM python:3.12-alpine
 
 WORKDIR /app
 
+# Install system dependencies including MySQL dev packages
 RUN apk add --no-cache \
-    postgresql-dev \
     gcc \
     python3-dev \
     musl-dev \
-    libffi-dev
+    libffi-dev \
+    mariadb-dev \
+    mariadb-connector-c-dev
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
