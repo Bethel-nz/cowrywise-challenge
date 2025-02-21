@@ -11,6 +11,7 @@ setup(
         'redis',
         'requests',
         'pytest',
-        'python-dotenv'
+        'python-dotenv',
+        'mysqlclient'
     ],
 ) 
