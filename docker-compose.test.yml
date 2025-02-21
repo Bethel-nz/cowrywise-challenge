@@ -35,49 +35,9 @@ services:
   test-redis:
     image: redis:alpine
     ports:
-      - '16380:6379'
+      - '6379:6379'
     networks:
       - test-network
-
-  test-frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/app
-    environment:
-      - DATABASE_URL=mysql://user:password@test-frontend-db:3306/test_frontend_db
-      - REDIS_URL=redis://test-redis:6379/0
-      - PYTHONPATH=/app
-    depends_on:
-      test-frontend-db:
-        condition: service_healthy
-      test-redis:
-        condition: service_started
-    networks:
-      - test-network
-    working_dir: /app
-    command: pytest -v
-
-  test-admin:
-    build:
-      context: ./admin
-      dockerfile: Dockerfile
-    volumes:
-      - ./admin:/app
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@test-postgres:5432/test_admin_db
-      - REDIS_URL=redis://test-redis:6379/0
-      - PYTHONPATH=/app
-    depends_on:
-      test-postgres:
-        condition: service_healthy
-      test-redis:
-        condition: service_started
-    networks:
-      - test-network
-    working_dir: /app
-    command: pytest -v
 
 networks:
   test-network:

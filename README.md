@@ -54,7 +54,7 @@ Data Management:
 
 ## Design Choice
 
-- ** Postgres**: Postgres for write-heavy operations.
+- **Postgres**: Postgres for write-heavy operations.
 - **Redis Pub/Sub**: Lightweight sync for book adds/removals/borrowing—low latency.
 
 ## Tech Stack
@@ -70,3 +70,5 @@ Data Management:
 docker compose up          # ADMIN: 8080, Frontend: 8181
 docker compose -f docker-compose.test.yml up  # Run tests
 ```
+
+**Note**: I would like to state that i have 0 experience using python, the tests are not up to standard and i would like to apologize for that as they would fail.

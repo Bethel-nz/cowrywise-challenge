@@ -113,16 +113,3 @@ def list_users_with_borrowed_books():
     except Exception as e:
         print(f"Admin: Error listing users with borrowed books: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
-@book_bp.route('/admin/drop-data', methods=['POST'])
-def drop_data():
-    try:
-        with db.session.begin():
-            db.session.query(BorrowedBook).delete()
-            db.session.query(User).delete()
-            db.session.query(Book).delete()
-            db.session.commit()
-        return jsonify({'message': 'Admin database cleared'}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500 

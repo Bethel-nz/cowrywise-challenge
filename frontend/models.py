@@ -14,11 +14,6 @@ class Book(db.Model):
     return_date = db.Column(db.DateTime, nullable=True)
     borrowed_records = db.relationship('BorrowedBook', backref='book', lazy=True)
 
-    __table_args__ = {
-        'mysql_engine': 'InnoDB',
-        'mysql_charset': 'utf8mb4'
-    }
-
 class User(db.Model):
     __tablename__ = 'user'
     
@@ -28,11 +23,6 @@ class User(db.Model):
     lastname = db.Column(db.String(80), nullable=False)
     borrowed_books = db.relationship('BorrowedBook', backref='user', lazy=True)
 
-    __table_args__ = {
-        'mysql_engine': 'InnoDB',
-        'mysql_charset': 'utf8mb4'
-    }
-
 class BorrowedBook(db.Model):
     __tablename__ = 'borrowed_book'
     
@@ -40,9 +30,4 @@ class BorrowedBook(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id', ondelete='CASCADE'), nullable=False)
     borrowed_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    return_date = db.Column(db.DateTime, nullable=False)
-
-    __table_args__ = {
-        'mysql_engine': 'InnoDB',
-        'mysql_charset': 'utf8mb4'
-    } 
+    return_date = db.Column(db.DateTime, nullable=False) 

@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import redis
 import os
+from sqlalchemy import text  # Import the text function
 
 db = SQLAlchemy()
 
@@ -28,11 +29,11 @@ def init_db(app):
 
 def create_tables(app):
     with app.app_context():
-        # Create tables with InnoDB engine
+        # Use text() to wrap the SQL commands
+        db.session.execute(text('SET NAMES utf8mb4'))
         db.create_all()
         
         # Ensure proper encoding for MySQL
-        db.session.execute('SET NAMES utf8mb4')
-        db.session.execute('SET CHARACTER SET utf8mb4')
-        db.session.execute('SET character_set_connection=utf8mb4')
+        db.session.execute(text('SET CHARACTER SET utf8mb4'))
+        db.session.execute(text('SET character_set_connection=utf8mb4'))
         db.session.commit()

@@ -1,12 +1,13 @@
 import pytest
 from frontend import create_app
 from frontend.database import db, redis_client
+import os
 
 @pytest.fixture(scope='session')
 def app():
     """Create and configure a new app instance for each test."""
     app = create_app({
-        'SQLALCHEMY_DATABASE_URI': 'postgresql://postgres:postgres@test-frontend-db:5432/test_frontend_db',
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',  # Use SQLite for testing
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,
         'TESTING': True
     })

@@ -44,6 +44,7 @@ services:
     environment:
       - DATABASE_URL=mysql://user:password@frontend_db:3306/frontend_db
       - REDIS_URL=redis://redis:6379/0
+      - MYSQL_ROOT_PASSWORD=password
     ports:
       - '8181:8181'
     networks:
@@ -85,6 +86,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 60s
 
   redis:
     image: redis:7-alpine

@@ -60,18 +60,6 @@ def list_all_books():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@book_bp.route('/drop-data', methods=['POST'])
-def drop_data():
-    try:
-        with db.session.begin():
-            db.session.query(BorrowedBook).delete()
-            db.session.query(User).delete()
-            db.session.query(Book).delete()
-            db.session.commit()
-        return jsonify({'message': 'Frontend database cleared'}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
 
 # User routes
 @user_bp.route('/users', methods=['POST'])

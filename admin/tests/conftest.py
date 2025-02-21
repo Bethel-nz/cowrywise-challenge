@@ -1,11 +1,12 @@
 import pytest
 from admin import create_app
 from admin.database import db, redis_client
+import os
 
 @pytest.fixture(scope='session')
 def app():
     app = create_app({
-        'SQLALCHEMY_DATABASE_URI': 'postgresql://postgres:postgres@test-postgres:5432/test_admin_db',
+        'SQLALCHEMY_DATABASE_URI': os.getenv('ADMIN_DB_URI', 'postgresql://postgres:postgres@localhost:5432/test_admin_db'),
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,
         'TESTING': True
     })
