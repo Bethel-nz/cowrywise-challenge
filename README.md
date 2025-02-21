@@ -54,14 +54,13 @@ Data Management:
 
 ## Design Choice
 
-- **MySQL + Postgres**: Split data stores—MySQL for read-heavy Frontend, Postgres for write-heavy Admin.
+- ** Postgres**: Postgres for write-heavy operations.
 - **Redis Pub/Sub**: Lightweight sync for book adds/removals/borrowing—low latency.
 
 ## Tech Stack
 
 - Python/Flask: Core APIs.
-- MySQL (Frontend): Fast reads for book catalog.
-- PostgreSQL (Admin): Transactional writes for management.
+- PostgreSQL : writes for Transactional operations.
 - Redis: Pub/Sub for sync.
 - Docker: Containerized deployment.
 
